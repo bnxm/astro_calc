@@ -52,6 +52,43 @@ class MoonCalc {
     );
   }
 
+  static List<MoonPhase> getPhases(DateTime start, Duration accuracy, {int count = 8}) {
+    final List<MoonPhase> phases = [];
+
+    DateTime time = start;
+    double lastPhase;
+    while (phases.length < count) {
+      final phase = getIllumination(time).phase;
+      lastPhase ??= phase;
+
+      double passedPhase;
+      final moonPhases = [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875];
+      for (final p in moonPhases) {
+        if (phase > p && lastPhase < p) {
+          passedPhase = p;
+          break;
+        } else if (phase < 0.5 && lastPhase > 0.5) {
+          passedPhase = 0.0;
+          break;
+        }
+      }
+
+      if (passedPhase != null) {
+        phases.add(
+          MoonPhase(
+            phase: passedPhase,
+            time: time.subtract(accuracy * 0.5),
+          ),
+        );
+      }
+
+      lastPhase = phase;
+      time = time.add(accuracy);
+    }
+
+    return phases;
+  }
+
   /// Calculates the [MoonTimes] for a given date and location.
   ///
   /// All times are in UTC.

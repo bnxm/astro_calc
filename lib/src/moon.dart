@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class MoonPosition {
   /// Moon azimuth in radians.
   final double azimuth;
@@ -122,4 +124,26 @@ class MoonTimes {
   int get hashCode {
     return rise.hashCode ^ set.hashCode ^ isAlwaysUp.hashCode ^ isAlwaysDown.hashCode;
   }
+}
+
+class MoonPhase {
+  final double phase;
+  final DateTime time;
+  MoonPhase({
+    this.phase,
+    this.time,
+  });
+
+  @override
+  String toString() => 'MoonPhase(phase: $phase, time: $time)';
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+
+    return o is MoonPhase && o.phase == phase && o.time == time;
+  }
+
+  @override
+  int get hashCode => phase.hashCode ^ time.hashCode;
 }
