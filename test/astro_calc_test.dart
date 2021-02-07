@@ -46,6 +46,13 @@ void main() {
       isAround(sunTimes.nadir, local(00, 26));
     });
 
+    test('Should ', () async {
+      // arrange
+      final sunTimes = SunCalc.getTimes(DateTime.now(), 1.3521, 103.8198, isUtc: false);
+      print(sunTimes);
+      
+    });
+
     test('Should return the correct SunPosition for the given date and location', () {
       // act
       final sunPosition = SunCalc.getPosition(utc(11, 25), latitude, longitude);
