@@ -10,6 +10,18 @@ void main() {
   const longitude = 9.993682;
 
   group('Sun', () {
+    test('Should return the correct sunrise sunset for Honolulu', () async {
+      // arrange
+      DateTime utc(int hour, int min) => DateTime.utc(2021, 05, 23, hour, min);
+
+      final date = utc(00, 00).add(const Duration(days: 1));
+      // act
+      final sunTimes = SunCalc.getTimes(date, 21.3069, -157.8583, isUtc: true);
+      // assert
+      isAround(sunTimes.sunrise, utc(15, 50));
+      isAround(sunTimes.sunset, utc(05, 06).add(const Duration(days: 1)));
+    });
+
     test('Should return the correct SunTimes for the given date and location in utc', () {
       // act
       final sunTimes = SunCalc.getTimes(date, latitude, longitude, isUtc: true);
@@ -28,7 +40,9 @@ void main() {
       isAround(sunTimes.nadir.add(const Duration(days: 1)), utc(23, 26));
     });
 
-    test('Should return the correct SunTimes for the given date and location in local time', () {
+    test(
+        'Should return the correct SunTimes for the given date and location in local time',
+        () {
       // act
       final sunTimes = SunCalc.getTimes(date, latitude, longitude, isUtc: false);
       // assert
@@ -50,7 +64,6 @@ void main() {
       // arrange
       final sunTimes = SunCalc.getTimes(DateTime.now(), 1.3521, 103.8198, isUtc: false);
       print(sunTimes);
-      
     });
 
     test('Should return the correct SunPosition for the given date and location', () {
@@ -63,22 +76,25 @@ void main() {
   });
 
   group('Moon', () {
-    test('Should return the correct MoonTimes for the given date and location in utc', () {
+    test('Should return the correct MoonTimes for the given date and location in utc',
+        () {
       // act
       final moonTimes = MoonCalc.getTimes(date, latitude, longitude, isUtc: true);
       // assert
-      isAround(moonTimes.rise, utc(06, 16));
-      isAround(moonTimes.set, utc(20, 00));
+      isAround(moonTimes.rise!, utc(06, 16));
+      isAround(moonTimes.set!, utc(20, 00));
       expect(moonTimes.isAlwaysDown, isFalse);
       expect(moonTimes.isAlwaysUp, isFalse);
     });
 
-    test('Should return the correct MoonTimes for the given date and location in local time', () {
+    test(
+        'Should return the correct MoonTimes for the given date and location in local time',
+        () {
       // act
       final moonTimes = MoonCalc.getTimes(date, latitude, longitude, isUtc: true);
       // assert
-      isAround(moonTimes.rise, local(07, 16));
-      isAround(moonTimes.set, local(21, 00));
+      isAround(moonTimes.rise!, local(07, 16));
+      isAround(moonTimes.set!, local(21, 00));
     });
 
     test('Should return the correct MoonIllumination for the given date', () {
@@ -120,8 +136,10 @@ void isAround(DateTime actual, DateTime expected, {int margin = 3}) {
   if (!isInBetween) {
     print('Before: $before');
     print('Actual: $actual');
-    print('After: $after');
+    print(' After: $after');
   }
+
+  print([after.millisecondsSinceEpoch, actual.millisecondsSinceEpoch]);
 
   expect(isInBetween, isTrue);
 }

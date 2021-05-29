@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class MoonPosition {
   /// Moon azimuth in radians.
   final double azimuth;
@@ -37,7 +35,10 @@ class MoonPosition {
 
   @override
   int get hashCode {
-    return azimuth.hashCode ^ altitude.hashCode ^ distance.hashCode ^ parallacticAngle.hashCode;
+    return azimuth.hashCode ^
+        altitude.hashCode ^
+        distance.hashCode ^
+        parallacticAngle.hashCode;
   }
 }
 
@@ -68,13 +69,17 @@ class MoonIllumination {
   });
 
   @override
-  String toString() => 'MoonIllumination(fraction: $fraction, phase: $phase, angle: $angle)';
+  String toString() =>
+      'MoonIllumination(fraction: $fraction, phase: $phase, angle: $angle)';
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is MoonIllumination && o.fraction == fraction && o.phase == phase && o.angle == angle;
+    return o is MoonIllumination &&
+        o.fraction == fraction &&
+        o.phase == phase &&
+        o.angle == angle;
   }
 
   @override
@@ -82,8 +87,8 @@ class MoonIllumination {
 }
 
 class MoonTimes {
-  final DateTime rise;
-  final DateTime set;
+  final DateTime? rise;
+  final DateTime? set;
   final bool isAlwaysUp;
   final bool isAlwaysDown;
   const MoonTimes({
@@ -94,11 +99,11 @@ class MoonTimes {
   });
 
   factory MoonTimes.fromMap(Map<String, dynamic> map, {bool isUtc = false}) {
-    if (map == null) return null;
+    DateTime get(String key) => isUtc ? map[key] : map[key]?.toLocal();
 
     return MoonTimes(
-      rise: isUtc ? map['rise'] : map['rise']?.toLocal(),
-      set: isUtc ? map['set'] : map['set']?.toLocal(),
+      rise: get('rise'),
+      set: get('set'),
       isAlwaysUp: map['isAlwaysUp'] ?? false,
       isAlwaysDown: map['isAlwaysDown'] ?? false,
     );
@@ -129,9 +134,9 @@ class MoonTimes {
 class MoonPhase {
   final double phase;
   final DateTime time;
-  MoonPhase({
-    this.phase,
-    this.time,
+  const MoonPhase({
+    required this.phase,
+    required this.time,
   });
 
   @override

@@ -8,8 +8,8 @@ class SunPosition {
   /// the horizon and PI/2 at the zenith (straight over your head).
   final double altitude;
   const SunPosition({
-    this.azimuth,
-    this.altitude,
+    this.azimuth = 0.0,
+    this.altitude = 0.0,
   });
 
   @override
@@ -68,22 +68,37 @@ class SunTimes {
 
   /// Nadir (darkest moment of the night, sun is in the lowest position).
   final DateTime nadir;
-  const SunTimes({
-    this.sunrise,
-    this.sunriseEnd,
-    this.sunsetStart,
-    this.sunset,
-    this.dawn,
-    this.dusk,
-    this.nauticalDawn,
-    this.nauticalDusk,
-    this.nightStart,
-    this.nightEnd,
-    this.eveningGoldenHourStart,
-    this.morningGoldenHourEnd,
-    this.solarNoon,
-    this.nadir,
-  });
+  SunTimes({
+    DateTime? sunrise,
+    DateTime? sunriseEnd,
+    DateTime? sunsetStart,
+    DateTime? sunset,
+    DateTime? dawn,
+    DateTime? dusk,
+    DateTime? nauticalDawn,
+    DateTime? nauticalDusk,
+    DateTime? nightStart,
+    DateTime? nightEnd,
+    DateTime? eveningGoldenHourStart,
+    DateTime? morningGoldenHourEnd,
+    DateTime? solarNoon,
+    DateTime? nadir,
+  })  : sunrise = sunrise ?? invalid,
+        sunriseEnd = sunriseEnd ?? invalid,
+        sunsetStart = sunsetStart ?? invalid,
+        sunset = sunset ?? invalid,
+        dawn = dawn ?? invalid,
+        dusk = dusk ?? invalid,
+        nauticalDawn = nauticalDawn ?? invalid,
+        nauticalDusk = nauticalDusk ?? invalid,
+        nightStart = nightStart ?? invalid,
+        nightEnd = nightEnd ?? invalid,
+        eveningGoldenHourStart = eveningGoldenHourStart ?? invalid,
+        morningGoldenHourEnd = morningGoldenHourEnd ?? invalid,
+        solarNoon = solarNoon ?? invalid,
+        nadir = nadir ?? invalid;
+
+  static final invalid = DateTime.fromMillisecondsSinceEpoch(0);
 
   /// The duration between sunrise and sunset.
   Duration get lengthOfDay => sunrise.difference(sunset);
@@ -130,23 +145,25 @@ class SunTimes {
   }
 
   factory SunTimes.fromMap(Map<String, dynamic> map, {bool isUtc = false}) {
-    if (map == null) return null;
+    DateTime get(String key) =>
+        (isUtc ? map[key] : map[key]?.toLocal()) ??
+        DateTime.fromMillisecondsSinceEpoch(0);
 
     return SunTimes(
-      sunrise: isUtc ? map['sunrise'] : map['sunrise']?.toLocal(),
-      sunriseEnd: isUtc ? map['sunriseEnd'] : map['sunriseEnd']?.toLocal(),
-      sunsetStart: isUtc ? map['sunsetStart'] : map['sunsetStart']?.toLocal(),
-      sunset: isUtc ? map['sunset'] : map['sunset']?.toLocal(),
-      dawn: isUtc ? map['dawn'] : map['dawn']?.toLocal(),
-      dusk: isUtc ? map['dusk'] : map['dusk']?.toLocal(),
-      nauticalDawn: isUtc ? map['nauticalDawn'] : map['nauticalDawn']?.toLocal(),
-      nauticalDusk: isUtc ? map['nauticalDusk'] : map['nauticalDusk']?.toLocal(),
-      nightStart: isUtc ? map['night'] : map['night']?.toLocal(),
-      nightEnd: isUtc ? map['nightEnd'] : map['nightEnd']?.toLocal(),
-      eveningGoldenHourStart: isUtc ? map['goldenHour'] : map['goldenHour']?.toLocal(),
-      morningGoldenHourEnd: isUtc ? map['goldenHourEnd'] : map['goldenHourEnd']?.toLocal(),
-      solarNoon: isUtc ? map['solarNoon'] : map['solarNoon']?.toLocal(),
-      nadir: isUtc ? map['nadir'] : map['nadir']?.toLocal(),
+      sunrise: get('sunrise'),
+      sunriseEnd: get('sunriseEnd'),
+      sunsetStart: get('sunsetStart'),
+      sunset: get('sunset'),
+      dawn: get('dawn'),
+      dusk: get('dusk'),
+      nauticalDawn: get('nauticalDawn'),
+      nauticalDusk: get('nauticalDusk'),
+      nightStart: get('night'),
+      nightEnd: get('nightEnd'),
+      eveningGoldenHourStart: get('goldenHour'),
+      morningGoldenHourEnd: get('goldenHourEnd'),
+      solarNoon: get('solarNoon'),
+      nadir: get('nadir'),
     );
   }
 

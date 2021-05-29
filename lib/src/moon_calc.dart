@@ -14,17 +14,17 @@ class MoonCalc {
     final d = toDays(date);
 
     final c = moonCoords(d);
-    final H = siderealTime(d, lw) - c['ra'];
-    var h = altitude(H, phi, c['dec']);
+    final H = siderealTime(d, lw) - c['ra']!;
+    var h = altitude(H, phi, c['dec']!);
     // formula 14.1 of "Astronomical Algorithms" 2nd edition by Jean Meeus (Willmann-Bell, Richmond) 1998.
-    final pa = math.atan2(math.sin(H), math.tan(phi) * math.cos(c['dec']) - math.sin(c['dec']) * math.cos(H));
+    final pa = math.atan2(math.sin(H), math.tan(phi) * math.cos(c['dec']!) - math.sin(c['dec']!) * math.cos(H));
 
     h = h + astroRefraction(h); // altitude correction for refraction
 
     return MoonPosition(
-      azimuth: azimuth(H, phi, c['dec']),
-      altitude: h,
-      distance: c['dist'].toInt(),
+      azimuth: azimuth(H, phi, c['dec']!) as double,
+      altitude: h as double,
+      distance: c['dist']!.toInt(),
       parallacticAngle: pa,
     );
   }
@@ -37,13 +37,13 @@ class MoonCalc {
 
     const sdist = 149598000; // distance from Earth to Sun in km
 
-    final phi = math.acos(math.sin(s['dec']) * math.sin(m['dec']) +
-        math.cos(s["dec"]) * math.cos(m['dec']) * math.cos(s['ra'] - m['ra']));
-    final inc = math.atan2(sdist * math.sin(phi), m['dist'] - sdist * math.cos(phi));
+    final phi = math.acos(math.sin(s['dec']!) * math.sin(m['dec']!) +
+        math.cos(s["dec"]!) * math.cos(m['dec']!) * math.cos(s['ra']! - m['ra']!));
+    final inc = math.atan2(sdist * math.sin(phi), m['dist']! - sdist * math.cos(phi));
     final angle = math.atan2(
-        math.cos(s['dec']) * math.sin(s['ra'] - m['ra']),
-        math.sin(s['dec']) * math.cos(m['dec']) -
-            math.cos(s['dec']) * math.sin(m['dec']) * math.cos(s['ra'] - m['ra']));
+        math.cos(s['dec']!) * math.sin(s['ra']! - m['ra']!),
+        math.sin(s['dec']!) * math.cos(m['dec']!) -
+            math.cos(s['dec']!) * math.sin(m['dec']!) * math.cos(s['ra']! - m['ra']!));
 
     return MoonIllumination(
       fraction: (1 + math.cos(inc)) / 2,
@@ -56,12 +56,12 @@ class MoonCalc {
     final List<MoonPhase> phases = [];
 
     DateTime time = start;
-    double lastPhase;
+    double? lastPhase;
     while (phases.length < count) {
       final phase = getIllumination(time).phase;
       lastPhase ??= phase;
 
-      double passedPhase;
+      double? passedPhase;
       final moonPhases = [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875];
       for (final p in moonPhases) {
         if (phase > p && lastPhase < p) {

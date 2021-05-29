@@ -21,11 +21,11 @@ class SunCalc {
     final d = toDays(date);
 
     final c = sunCoords(d);
-    final H = siderealTime(d, lw) - c['ra'];
+    final H = siderealTime(d, lw) - c['ra']!;
 
     return SunPosition(
-      azimuth: azimuth(H, phi, c['dec']).toDouble(),
-      altitude: altitude(H, phi, c['dec']).toDouble(),
+      azimuth: azimuth(H, phi, c['dec']!).toDouble(),
+      altitude: altitude(H, phi, c['dec']!).toDouble(),
     );
   }
 
