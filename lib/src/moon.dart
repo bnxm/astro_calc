@@ -99,7 +99,7 @@ class MoonTimes {
   });
 
   factory MoonTimes.fromMap(Map<String, dynamic> map, {bool isUtc = false}) {
-    DateTime get(String key) => isUtc ? map[key] : map[key]?.toLocal();
+    DateTime? get(String key) => isUtc ? map[key] : map[key]?.toLocal();
 
     return MoonTimes(
       rise: get('rise'),
